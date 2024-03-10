@@ -1,0 +1,17 @@
+In clasa App am implementat metode ce tin de functionarea aplicatiei(create_user, login, cleanup-all) si metode ce vizeaza statistici ale aplicatiei(top 5...). Celelalte comenzi de utilizare ale aplicatiei le-am implementat ca metode in clasa User, Post si Comment. Comenzile care aduc modificari si asupra userului logat le-a implementat ca metode in clasa User, iar comenzile care aduc schimbari doar asupra postarilor/comentariilor(like, unlike) le-am implementat ca metode in clasele aferete. Metodele de afisare a postarilor(get-user-posts, get-following-posts, get_post_details) le-am implementat ca metode statice in clasa Post.
+
+La crearea userilor, creadetialele le sunt stocate in fisierul credentials.json ce contine un JSONarray de JSONobjects {usernarme:parola}.
+Procesul de login consta in incarcarea in memorie a fisierului credentials.json, selectarea JSONobject-ului necesar si instantierea unui obiect de tip User
+
+Atributele pentru fiecare obiect din clasele User, Post si Comment le-am stocat sub forma de JSONobject in fisiere .json pe care, de fiecare data cand am nevoie, le parsez, le salvez in memorie sub forma de JSONarray, verific conditii pe baza informatiilor din obiectele JSONarray-ulor, imi instantiez obiecte de tip user/post/comment, fac prelucrari asupra lor, iar cand am terminat, fac conversia de la user/post/comment la JSONObject, reactualizez JSONarray-urile si suprascriu fisierele.
+
+Clasele definite implementeaza interfata Conversions care declara o metoda pentru conversia catre JSONObject a obiectelor din clasele care o implementeaza si un atribuit pentru formatarea datelor calendaristice. Clasele mai implementeaza si interfata Comparable pentru a putea sorta obiectele dupa cate un criteriu standard(useri dupa numarul de followers, postarile dupa numarul de like-uri). Pentru a ordona postatile dupa numarul de comentarii am folosit o clasa interna anonima care extinde clasa de baza si suprascrie metoda compareTo. Pentru a ordona useri dupa numarul total de like-iri, clasa interna nou creata nu a mai putut fi anomima fiindca prin castul la clasa de baza User din metoda CompareTo nu aveam acces la atributele specifice subclasei.
+
+La stergerea unei postari sau comentariu, acestea raman in continuare stocate in fisiere posts.json si comments.json, dar atributul deleted se schimba in true. 
+La stergerea unui comentariu, acesta e eliminat din lista de comentarii ale postarii de care apartile si din lista de comentarii a ownerului. 
+La stergerea unei postari, acesta e eliminat din lista de postari a ownerului, iar daca postarea avea comentarii, pentru fiecare comentariu din lista, se cauta ownerul si i se sterge comentariul din lista de comentarii.(CAZ LIMITA ABORDAT SI INEXISTENT IN TESTE!!!!!!!!!!!!!!!!!!!!!!)
+
+Sugestii de 
+1. In reguliile de implementare ale temei spune ca "Nu poți vedea postările unui utilizator pe care nu îl urmărești.". La testul testDeleteCommentSuccessfully ar terbuie sa avem ownerul postatii in lista following pentru a putea comenta in prima faza. La test testLikesCommentSuccessfully ar trebui sa avem ownerul postarii in lista following pentru a putea avea acces la comentariul curuia ii dam like.
+2. La testPostDetailsSuccessfully, care este rostul setului de paranteze patrate din jurul postarii (prima paranteza patrata de dupa "message") daca avem doar o postare ci nu mai multe cum este cazul la -get-user-posts?
+3. La testul testGetMostLikedPostsSuccessfully spatierea de la ultima parateza patrata este gresita
